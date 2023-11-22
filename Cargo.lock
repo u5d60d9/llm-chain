@@ -1773,6 +1773,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "llm-chain-azure"
+version = "0.13.0"
+dependencies = [
+ "anyhow",
+ "async-openai",
+ "async-trait",
+ "futures",
+ "llm-chain",
+ "qdrant-client",
+ "serde",
+ "serde_yaml",
+ "strum 0.24.1",
+ "strum_macros 0.24.3",
+ "thiserror",
+ "tiktoken-rs",
+ "tokio",
+]
+
+[[package]]
 name = "llm-chain-hnsw"
 version = "0.13.0"
 dependencies = [

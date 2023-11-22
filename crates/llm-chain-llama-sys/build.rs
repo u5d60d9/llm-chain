@@ -80,6 +80,8 @@ fn main() {
     let mut code = std::process::Command::new("cmake");
     let code = code
         .arg("..")
+        .arg("-DCMAKE_C_COMPILER=/usr/bin/clang-13")
+        .arg("-DCMAKE_CXX_COMPILER=/usr/bin/clang++-13")
         .arg("-DCMAKE_BUILD_TYPE=Release")
         .arg("-DBUILD_SHARED_LIBS=OFF")
         .arg("-DLLAMA_ALL_WARNINGS=OFF")

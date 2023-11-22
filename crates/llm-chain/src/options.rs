@@ -224,6 +224,7 @@ impl OptionsBuilder {
 /// A cascade of option sets.
 ///
 /// Options added later in the cascade override earlier options.
+#[derive(Debug,Clone)]
 pub struct OptionsCascade<'a> {
     /// The sets of options, in the order they were added.
     cascades: Vec<&'a Options>,
@@ -330,7 +331,7 @@ impl TokenBias {
 #[derive(EnumDiscriminants, Clone, Debug, Serialize, Deserialize)]
 pub enum Opt {
     /// The name or path of the model used.
-    Model(ModelRef),
+    Model(ModelRef),        
     /// The API key for the model service.
     ApiKey(String),
     /// The number of threads to use for parallel processing.
@@ -374,6 +375,11 @@ pub enum Opt {
     /// The number of most recent tokens to consider when applying the repeat penalty.
     /// This is common to all models.
     RepeatPenaltyLastN(usize),
+
+    /// Deployment Name , azure openai
+    AzureDeployment(String),
+    AzureBaseUrl(String),
+    AzureApiVersion(String),
 
     /// The TfsZ parameter for llm-chain-llama.
     TfsZ(f32),
