@@ -1,7 +1,7 @@
 use llm_chain::{
     agents::self_ask_with_search::{Agent, EarlyStoppingConfig},
     executor,options,
-    tools::tools::GoogleSerper,
+    tools::tools::GoogleSearch,
 };
 
 #[tokio::main(flavor = "current_thread")]
@@ -12,8 +12,10 @@ async fn main() {
         AzureApiVersion: "2023-10-01-preview"
     );
 
-    let executor = executor!(azuregpt,opts)?;    let serper_api_key = std::env::var("SERPER_API_KEY").unwrap();
-    let search_tool = GoogleSerper::new(serper_api_key);
+    let executor = executor!(azuregpt,opts).unwrap();    
+    let google_api_key = std::env::var("GOOGLE_API_KEY").unwrap();
+    let cse = std::env::var("GOOGLE_API_CSE").unwrap();
+    let search_tool = GoogleSearch::new(google_api_key,cse);
     let agent = Agent::new(
         executor,
         search_tool,
