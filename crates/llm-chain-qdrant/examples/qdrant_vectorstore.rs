@@ -12,8 +12,9 @@ async fn main() {
     // Qdrant prep
     let config = QdrantClientConfig::from_url("http://localhost:6334");
     let client = Arc::new(QdrantClient::new(Some(config)).unwrap());
-    let collection_name = "my-collection".to_string();
-    let embedding_size = 1536;
+    let collection_name = "my-benchmark2".to_string();
+    // let embedding_size = 1536;
+    let embedding_size = 384;  //all-MiniLM-L12-v2
 
     if !client
         .has_collection(collection_name.clone())
@@ -40,8 +41,7 @@ async fn main() {
             .unwrap();
     }
 
-    let embeddings = llm_chain_openai::embeddings::Embeddings::default();
-
+    let embeddings = llm_chain_openai::embeddings::Embeddings::alternative("http://localhost:8080");
     // Storing documents
     let qdrant: Qdrant<llm_chain_openai::embeddings::Embeddings, EmptyMetadata> = Qdrant::new(
         client.clone(),

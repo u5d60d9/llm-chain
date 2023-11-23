@@ -62,19 +62,30 @@ impl traits::Embeddings for Embeddings {
 
 impl Default for Embeddings {
     fn default() -> Self {
-        let client = Arc::new(async_openai::Client::<OpenAIConfig>::new());
+        let client: Arc<async_openai::Client<OpenAIConfig>> = Arc::new(async_openai::Client::<OpenAIConfig>::new());
         Self {
             client,
             model: "text-embedding-ada-002".to_string(),
         }
     }
 }
-
+ 
 impl Embeddings {
     pub fn for_client(client: async_openai::Client<OpenAIConfig>, model: &str) -> Self {
         Self {
             client: client.into(),
             model: model.to_string(),
+        }
+    } 
+    
+    //openai compatible alternatives.
+    pub fn alternative(url: &str) -> Self {
+        let config: OpenAIConfig = OpenAIConfig::new().with_api_base(url);        
+        let client = Arc::new( async_openai::Client::with_config(config));
+
+        Self {
+            client: client.into(),
+            model: "text-embedding-ada-002".to_string(),
         }
     }
 }

@@ -1,4 +1,4 @@
-use llm_chain::executor;
+use llm_chain::{executor, options};
 use llm_chain::prompt::{ChatMessageCollection, StringTemplate};
 use llm_chain::step::Step;
 use llm_chain::traits::VectorStore;
@@ -15,7 +15,7 @@ use llm_chain::tools::{Tool, ToolCollection, ToolDescription, ToolError};
 use llm_chain::{multitool, parameters};
 use llm_chain_qdrant::{Qdrant, QdrantError};
 
-use llm_chain_openai::embeddings::{Embeddings, OpenAIEmbeddingsError};
+use llm_chain_azure::embeddings::{Embeddings, OpenAIEmbeddingsError};
 use qdrant_client::prelude::{QdrantClient, QdrantClientConfig};
 use qdrant_client::qdrant::{CreateCollection, Distance, VectorParams, VectorsConfig};
 use serde::{Deserialize, Serialize};
@@ -48,7 +48,7 @@ async fn build_local_qdrant() -> Qdrant<Embeddings, EmptyMetadata> {
     // Qdrant prep
     let config = QdrantClientConfig::from_url("http://localhost:6334");
     let client = Arc::new(QdrantClient::new(Some(config)).unwrap());
-    let collection_name = "my-collection".to_string();
+    let collection_name = "my-benchmark".to_string();
     let embedding_size = 1536;
 
     if !client
@@ -76,9 +76,9 @@ async fn build_local_qdrant() -> Qdrant<Embeddings, EmptyMetadata> {
             .unwrap();
     }
 
-    let embeddings = llm_chain_openai::embeddings::Embeddings::default();
+    let embeddings = llm_chain_azure::embeddings::Embeddings::default();
 
-    let qdrant = Qdrant::<llm_chain_openai::embeddings::Embeddings, EmptyMetadata>::new(
+    let qdrant = Qdrant::<llm_chain_azure::embeddings::Embeddings, EmptyMetadata>::new(
         client,
         collection_name,
         embeddings,
@@ -119,8 +119,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         "You need an OPENAI_API_KEY env var with a valid OpenAI API key to run this example",
     );
     let qdrant = build_local_qdrant().await;
-
-    let exec = executor!().unwrap();
+    let opts = options!(
+        AzureDeployment: "my-openai-model",
+        AzureBaseUrl: "https://openai.fdcyun.com",
+        AzureApiVersion: "2023-10-01-preview"
+    );
+    let exec = executor!(azuregpt,opts).unwrap();
 
     let mut tool_collection = ToolCollection::<Multitool>::new();
 
@@ -156,7 +160,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let prompt = ChatMessageCollection::new()
         .with_system(StringTemplate::tera(
-            "You are an automated agent for performing tasks. Your output must always be YAML.",
+            "You are an automated agent for performing tasks. Your output must always be YAML.\n Final Language: Chinese",
         ))
         .with_user(StringTemplate::combine(vec![
             tool_collection.to_prompt_template().unwrap(),

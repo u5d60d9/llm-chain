@@ -1902,6 +1902,7 @@ dependencies = [
  "async-trait",
  "llm-chain",
  "llm-chain-azure",
+ "llm-chain-openai",
  "qdrant-client",
  "serde",
  "serde_json",
