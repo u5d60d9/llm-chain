@@ -25,15 +25,15 @@ async fn main() {
         },
     );
     let (res, intermediate_steps) = agent
-        .run("What is the capital of the birthplace of Levy Mwanawasa?")
+        .run("how to write a echart.js line graph with forecast,show me the code")
         .await
         .unwrap();
     println!(
         "Are followup questions needed here: {}",
         agent.build_agent_scratchpad(&intermediate_steps)
     );
-    println!(
-        "Agent final answer: {}",
-        res.return_values.get("output").unwrap()
-    );
+    // println!(
+    //     "Agent final answer: {}",
+    //     res.return_values.get("output").unwrap()
+    // );
 }

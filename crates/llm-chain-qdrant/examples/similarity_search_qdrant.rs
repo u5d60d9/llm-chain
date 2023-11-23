@@ -4,7 +4,7 @@ use llm_chain::{
     schema::{Document, EmptyMetadata},
     traits::VectorStore,
 };
-use llm_chain_openai::embeddings::Embeddings;
+use llm_chain_azure::embeddings::Embeddings;
 use llm_chain_qdrant::Qdrant;
 use qdrant_client::{
     prelude::{QdrantClient, QdrantClientConfig},
@@ -16,7 +16,7 @@ async fn main() {
     // Qdrant prep
     let config = QdrantClientConfig::from_url("http://localhost:6334");
     let client = Arc::new(QdrantClient::new(Some(config)).unwrap());
-    let collection_name = "my-collection".to_string();
+    let collection_name = "my-benchmark".to_string();
     let embedding_size = 1536;
 
     if !client
@@ -44,7 +44,7 @@ async fn main() {
             .unwrap();
     }
     println!("OPENAI KEY: {}", std::env::var("OPENAI_API_KEY").unwrap());
-    let embeddings = llm_chain_openai::embeddings::Embeddings::default();
+    let embeddings = llm_chain_azure::embeddings::Embeddings::default();
 
     // Storing documents
     let qdrant: Qdrant<Embeddings, EmptyMetadata> = Qdrant::new(
